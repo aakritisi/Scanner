@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Scanner {
+	String inputString;
 	
 	@SuppressWarnings("preview")
 	public record Token(
@@ -102,6 +103,7 @@ public class Scanner {
 
 	Scanner(String inputString) {
 		/* IMPLEMENT THIS */
+		this.inputString = inputString;
 	}
 	
 

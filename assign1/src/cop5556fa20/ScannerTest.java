@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+
 import cop5556fa20.Scanner.LexicalException;
 import cop5556fa20.Scanner.Token;
 
