@@ -33,6 +33,7 @@ class ScannerTest {
 	
 	//To make it easy to print objects and turn this output on and off.
 	static final boolean doPrint = true;
+	
 	private void show(Object input) {
 		if (doPrint) {
 			System.out.println(input.toString());
