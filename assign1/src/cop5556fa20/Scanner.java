@@ -15,10 +15,11 @@
 package cop5556fa20;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class Scanner {
-	String inputString;
+	
 	
 	@SuppressWarnings("preview")
 	public record Token(
@@ -100,10 +101,15 @@ public class Scanner {
 	 * position of the next token to be returned by a call to nextToken
 	 */
 	private int nextTokenPos = 0;
+	private final char[] chars;
+	
+	private enum State {START, IDENT, DIGIT}
 
 	Scanner(String inputString) {
 		/* IMPLEMENT THIS */
-		this.inputString = inputString;
+		int numChars = inputString.length();
+		this.chars = Arrays.copyOf(inputString.toCharArray(), numChars + 1);
+		
 	}
 	
 
@@ -113,10 +119,146 @@ public class Scanner {
 		int pos = 0;
 		int line = 1;
 		int posInLine = 1;
+		char ch;
+		State state = State.START;
+		while (pos < chars.length)
+		{
+			ch = chars[pos];
+			switch(State) {
+				case START -> {
+					
+					switch(ch) {
+						case '(' -> {
+							
+							tokens.add(new Token(Kind.LPAREN, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+							
+						}
+						case ')' -> {
+							tokens.add(new Token(Kind.RPAREN, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '[' -> {
+							tokens.add(new Token(Kind.LSQUARE, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case ']' -> {
+							tokens.add(new Token(Kind.RSQUARE, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case ';' -> {
+							tokens.add(new Token(Kind.SEMI, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						
+						case ',' -> {
+							tokens.add(new Token(Kind.COMMA, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '<' -> {
+							if(chars[pos+1] == '<')
+							{
+								tokens.add(new Token(Kind.LPIXEL, pos, 1, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else if(chars[pos+1] == '=')
+							{
+								tokens.add(new Token(Kind.LE, pos, 1, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else
+							{
+								tokens.add(new Token(Kind.LT, pos, 1, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							
+						}
+						
+					
+					}
+					
+				}
+			}
+			
+			
+			
+			
+				pos++;
+				posInLine++;
+				start(pos,line,posInLine);
+				
+			
+			else if(ch == '\n' || ch == '\r' ||)
+			{
+				
+			}
+			
+		}
+			 
 		tokens.add(new Token(Kind.EOF, pos, 0, line, posInLine));
 		return this;
 	}
 	
+	public void start(int pos, int line, int posInLine) throws LexicalException
+	{
+		State state = State.START;
+		char ch = chars[pos];
+		String curr = "";
+		boolean fl = false;
+		if(ch == '"')
+		{
+			for(int i =pos+1; i<chars.length; i++)
+			{
+				
+				if(chars[i] == '"' )
+				{
+					fl = true;
+				}
+				else
+				{
+					curr += chars[i];
+				}
+			}
+			
+			if (fl == false)
+			{
+				throw new LexicalException("Illegal Character", pos);
+
+			}
+			else if(curr != "" && !curr.contains("\"))
+			{
+				tokens.add(new Token(Kind.STRINGLIT, pos, curr.length(), line, posInLine));
+			}
+			
+			
+		}
+		else if (Character.isAlphabetic(ch) || ch == '_' || ch == '$')
+		{
+			pos++;
+			posInLine++;
+			curr += ch;
+			ch = chars[pos];
+			
+		}
+		else if (Character.isDigit(ch))
+		{
+			if(ch == '0' && chars[pos+1] == 0)
+		}
+		switch(ch) {
+		case 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g'-> {
+			
+		}
+		}
+	}
 
 	/**
 	 * precondition:  This Token is an INTLIT or CONST
