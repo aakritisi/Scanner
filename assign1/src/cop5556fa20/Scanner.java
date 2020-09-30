@@ -107,8 +107,11 @@ public class Scanner {
 
 	Scanner(String inputString) {
 		/* IMPLEMENT THIS */
+		
 		int numChars = inputString.length();
 		this.chars = Arrays.copyOf(inputString.toCharArray(), numChars + 1);
+		this.chars[numChars] = 0;
+		
 		
 	}
 	
@@ -116,6 +119,7 @@ public class Scanner {
 	
 	public Scanner scan() throws LexicalException {
 		/* IMPLEMENT THIS */
+		System.out.println(chars[0]);
 		int pos = 0;
 		int line = 1;
 		int posInLine = 1;
@@ -127,7 +131,8 @@ public class Scanner {
 		while (pos < chars.length)
 		{	
 			ch = chars[pos];
-			switch(State) {
+			
+			switch(state) {
 				case START -> {
 					startPos = pos;
 					switch(ch) {
@@ -154,6 +159,7 @@ public class Scanner {
 							posInLine++;
 						}
 						case ';' -> {
+							System.out.println("kdkdk");
 							tokens.add(new Token(Kind.SEMI, pos, 1, line, posInLine));
 							pos++;
 							posInLine++;
@@ -313,6 +319,7 @@ public class Scanner {
 							posInLine++;
 						}
 						case '\n','\r' -> {
+							posInLine = 1;
 							pos++;
 							line++;
 						}
@@ -348,9 +355,10 @@ public class Scanner {
 							}
 							else 
 							{
-								tokens.add(new Token(Kind.STRINGLIT, pos, curr.length(), line, posInLine));
-								pos += curr.length();
-								posInLine += curr.length();
+								System.out.println(curr);
+								tokens.add(new Token(Kind.STRINGLIT, pos, curr.length()+2, line, posInLine));
+								pos += curr.length()+2;
+								posInLine += curr.length()+2;
 								state = State.START;
 								curr = "";
 							}
@@ -367,19 +375,30 @@ public class Scanner {
 							pos++;
 							posInLine++;
 						}
+						case 0 -> {
+							System.out.println("me");
+							pos++;
+							tokens.add(new Token(Kind.EOF, pos, 0, line, posInLine));
+						}
 						default -> {
+							
 							if(Character.isAlphabetic(ch))
 							{
+								
 								curr += ch;
 								state = State.IDENT;
 								pos++;
-								posInLine++;
+							
 							}
 							else if(Character.isDigit(ch))
 							{
 								state = State.DIGIT;
 								pos++;
-								posInLine++;
+								
+							}
+							else
+							{
+								throw new LexicalException("Illegal Character", pos);
 							}
 						}
 						
@@ -451,19 +470,23 @@ public class Scanner {
 							state = State.START;
 						}
 						default -> {
+							
 							if(Character.isAlphabetic(ch)||Character.isDigit(ch)||ch =='_'||ch =='$')
 							{
+								
 								curr += ch;
 								pos++;
-								posInLine++;
+								
 								
 								
 							}
 							else
 							{
+								
 								tokens.add(new Token(Kind.IDENT, startPos, curr.length(), line, posInLine));
+								posInLine += curr.length();
 								curr = "";
-								state = State.START;
+								state = State.START; 
 							}
 						}
 					}
@@ -472,64 +495,22 @@ public class Scanner {
 				case DIGIT -> {
 					if(Character.isDigit(ch)) {
 						pos++;
-						posInLine++;
+						
 					}
 					else
 					{
-						tokens.add(new Token(Kind.INTLIT, startPos, curr.length(), line, posInLine));
+						tokens.add(new Token(Kind.INTLIT, startPos, pos-startPos +1, line, posInLine));
+						posInLine += pos-startPos +1;
 						state = State.START;
 					}
 				}
 			}
-			
-			
-			
-			
-				pos++;
-				posInLine++;
-				start(pos,line,posInLine);
-				
-			
-			else if(ch == '\n' || ch == '\r' ||)
-			{
-				
-			}
-			
 		}
-			 
-		tokens.add(new Token(Kind.EOF, pos, 0, line, posInLine));
+		
 		return this;
 	}
 	
-	public void start(int pos, int line, int posInLine) throws LexicalException
-	{
-		State state = State.START;
-		char ch = chars[pos];
-		String curr = "";
-		boolean fl = false;
-		if(ch == '"')
-		{
-			
-			
-		}
-		else if (Character.isAlphabetic(ch) || ch == '_' || ch == '$')
-		{
-			pos++;
-			posInLine++;
-			curr += ch;
-			ch = chars[pos];
-			
-		}
-		else if (Character.isDigit(ch))
-		{
-			if(ch == '0' && chars[pos+1] == 0)
-		}
-		switch(ch) {
-		case 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g'-> {
-			
-		}
-		}
-	}
+
 
 	/**
 	 * precondition:  This Token is an INTLIT or CONST
