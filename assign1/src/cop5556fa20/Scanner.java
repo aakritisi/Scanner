@@ -119,14 +119,17 @@ public class Scanner {
 		int pos = 0;
 		int line = 1;
 		int posInLine = 1;
+		int startPos = 0;
 		char ch;
+		boolean fl = false;
+		String curr = "";
 		State state = State.START;
 		while (pos < chars.length)
-		{
+		{	
 			ch = chars[pos];
 			switch(State) {
 				case START -> {
-					
+					startPos = pos;
 					switch(ch) {
 						case '(' -> {
 							
@@ -164,13 +167,19 @@ public class Scanner {
 						case '<' -> {
 							if(chars[pos+1] == '<')
 							{
-								tokens.add(new Token(Kind.LPIXEL, pos, 1, line, posInLine));
+								tokens.add(new Token(Kind.LPIXEL, pos, 2, line, posInLine));
 								pos++;
 								posInLine++;
 							}
 							else if(chars[pos+1] == '=')
 							{
-								tokens.add(new Token(Kind.LE, pos, 1, line, posInLine));
+								tokens.add(new Token(Kind.LE, pos, 2, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else if(chars[pos+1] == '-')
+							{
+								tokens.add(new Token(Kind.LARROW, pos, 2, line, posInLine));
 								pos++;
 								posInLine++;
 							}
@@ -182,10 +191,294 @@ public class Scanner {
 							}
 							
 						}
+						case '>' -> {
+							if(chars[pos+1] == '>')
+							{
+								tokens.add(new Token(Kind.RPIXEL, pos, 2, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else if(chars[pos+1] == '=')
+							{
+								tokens.add(new Token(Kind.GE, pos, 2, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else
+							{
+								tokens.add(new Token(Kind.GT, pos, 1, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+						}
+						case '=' -> {
+							if(chars[pos+1] == '=')
+							{
+								tokens.add(new Token(Kind.EQ, pos, 2, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else
+							{
+								tokens.add(new Token(Kind.ASSIGN, pos, 1, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							
+						}
+						case '!' -> {
+							if(chars[pos+1] == '=')
+							{
+								tokens.add(new Token(Kind.NEQ, pos, 2, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							else
+							{
+								tokens.add(new Token(Kind.EXCL, pos, 1, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							
+						}
+						case '?' -> {
+							tokens.add(new Token(Kind.Q, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case ':' -> {
+							tokens.add(new Token(Kind.COLON, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '+' -> {
+							tokens.add(new Token(Kind.PLUS, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						
+						case '-' -> {
+							if (chars[pos+1] == '>')
+							{
+								tokens.add(new Token(Kind.RARROW, pos, 2, line, posInLine));
+								pos++;
+								posInLine++;
+							}
+							tokens.add(new Token(Kind.MINUS, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						
+						case '*' -> {
+							tokens.add(new Token(Kind.STAR, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						
+						case '/' -> {
+							tokens.add(new Token(Kind.DIV, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '%' -> {
+							tokens.add(new Token(Kind.MOD, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '@' -> {
+							tokens.add(new Token(Kind.AT, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '#' -> {
+							tokens.add(new Token(Kind.HASH, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '&' -> {
+							tokens.add(new Token(Kind.AND, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '|' -> {
+							tokens.add(new Token(Kind.OR, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '\b' -> {
+							pos++;
+						}
+						case '\t',' ' -> {
+							pos++;
+							posInLine++;
+						}
+						case '\n','\r' -> {
+							pos++;
+							line++;
+						}
+						case 'X' -> {
+							tokens.add(new Token(Kind.KW_X, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case 'Y' -> {
+							tokens.add(new Token(Kind.KW_Y, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						case '"' -> {
+							for(int i =pos+1; i<chars.length; i++)
+							{
+								
+								if(chars[i] == '"' )
+								{
+									fl = true;
+									break;
+								}
+								else
+								{
+									curr += chars[i];
+								}
+							}
+							
+							if (fl == false)
+							{
+								throw new LexicalException("Illegal Character", pos);
+
+							}
+							else 
+							{
+								tokens.add(new Token(Kind.STRINGLIT, pos, curr.length(), line, posInLine));
+								pos += curr.length();
+								posInLine += curr.length();
+								state = State.START;
+								curr = "";
+							}
+							
+						}
+						case '_','$' -> {
+							curr += ch;
+							state = State.IDENT;
+							pos++;
+							posInLine++;
+						}
+						case '0' -> {
+							tokens.add(new Token(Kind.INTLIT, pos, 1, line, posInLine));
+							pos++;
+							posInLine++;
+						}
+						default -> {
+							if(Character.isAlphabetic(ch))
+							{
+								curr += ch;
+								state = State.IDENT;
+								pos++;
+								posInLine++;
+							}
+							else if(Character.isDigit(ch))
+							{
+								state = State.DIGIT;
+								pos++;
+								posInLine++;
+							}
+						}
 						
 					
 					}
 					
+				}
+				case IDENT -> {
+					switch(curr) {
+						case "width" -> {
+							tokens.add(new Token(Kind.KW_WIDTH, startPos, curr.length(), line, posInLine));
+							state = State.START;
+							curr = "";
+							
+						}
+						case "height" -> {
+							tokens.add(new Token(Kind.KW_HEIGHT, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "screen" -> {
+							tokens.add(new Token(Kind.KW_SCREEN, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "screen_width" -> {
+							tokens.add(new Token(Kind.KW_SCREEN_WIDTH, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "screen_height" -> {
+							tokens.add(new Token(Kind.KW_SCREEN_HEIGHT, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "image" -> {
+							tokens.add(new Token(Kind.KW_image, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "int" -> {
+							tokens.add(new Token(Kind.KW_int, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "string" -> {
+							tokens.add(new Token(Kind.KW_string, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "red" -> {
+							tokens.add(new Token(Kind.KW_RED, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "green" -> {
+							tokens.add(new Token(Kind.KW_GREEN, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "blue" -> {
+							tokens.add(new Token(Kind.KW_BLUE, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						case "Z", "WHITE", "SILVER", "GRAY", "BLACK", "RED", "MAROON", "YELLOW", "OLIVE", "LIME", "GREEN", "AQUA", "TEAL", "BLUE", "NAVY", "FUCHSIA", "PURPLE" ->{
+							tokens.add(new Token(Kind.CONST, startPos, curr.length(), line, posInLine));
+							curr = "";
+							state = State.START;
+						}
+						default -> {
+							if(Character.isAlphabetic(ch)||Character.isDigit(ch)||ch =='_'||ch =='$')
+							{
+								curr += ch;
+								pos++;
+								posInLine++;
+								
+								
+							}
+							else
+							{
+								tokens.add(new Token(Kind.IDENT, startPos, curr.length(), line, posInLine));
+								curr = "";
+								state = State.START;
+							}
+						}
+					}
+					
+				}
+				case DIGIT -> {
+					if(Character.isDigit(ch)) {
+						pos++;
+						posInLine++;
+					}
+					else
+					{
+						tokens.add(new Token(Kind.INTLIT, startPos, curr.length(), line, posInLine));
+						state = State.START;
+					}
 				}
 			}
 			
@@ -216,28 +509,6 @@ public class Scanner {
 		boolean fl = false;
 		if(ch == '"')
 		{
-			for(int i =pos+1; i<chars.length; i++)
-			{
-				
-				if(chars[i] == '"' )
-				{
-					fl = true;
-				}
-				else
-				{
-					curr += chars[i];
-				}
-			}
-			
-			if (fl == false)
-			{
-				throw new LexicalException("Illegal Character", pos);
-
-			}
-			else if(curr != "" && !curr.contains("\"))
-			{
-				tokens.add(new Token(Kind.STRINGLIT, pos, curr.length(), line, posInLine));
-			}
 			
 			
 		}
