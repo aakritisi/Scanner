@@ -66,7 +66,75 @@ public class Scanner {
 	 */
 	public String getText(Token token) {
 		/* IMPLEMENT THIS */
-		return null;
+		Kind currKind = token.kind;
+		int startPos = token.pos;
+		int currLength = token.length;
+		String text = "";
+		switch (currKind) {
+		case STRINGLIT -> {		
+				for(int i = startPos+1; i<startPos+currLength-1; i++)
+					{
+						
+						if(chars[i] == '\\')
+							{
+								
+									switch (chars[i+1]) {
+										case 'n' -> {
+											text += '\n';
+											i++;
+										}
+										case 't' -> {
+											text += '\t';
+											i++;
+										}
+										case 'b' -> {
+											text += '\b';
+											i++;
+										}
+										case 'f' -> {
+											text += '\f';
+											i++;
+										}
+										case 'r' -> {
+											text += '\r';
+											i++;
+										}
+										case '"' -> {
+		
+											text += '\"';
+											i++;
+										}
+										case '\'' -> {
+											
+											text += '\'';
+											i++;
+										}
+										case '\\' -> {
+										
+											text += '\\';
+											i++;
+										}
+										default -> {
+											text += '\\';
+										}
+									}
+							}
+							else {
+							
+							text += chars[i];
+							}
+					
+					}
+			}
+		default -> {
+			
+			for(int i = startPos; i<startPos+currLength; i++)
+				{
+					text += chars[i];
+				}
+			}
+		}
+		return text;
 	}
 	
 	
@@ -119,7 +187,7 @@ public class Scanner {
 	
 	public Scanner scan() throws LexicalException {
 		/* IMPLEMENT THIS */
-		System.out.println(chars[0]);
+		
 		int pos = 0;
 		int line = 1;
 		int posInLine = 1;
@@ -159,7 +227,7 @@ public class Scanner {
 							posInLine++;
 						}
 						case ';' -> {
-							System.out.println("kdkdk");
+
 							tokens.add(new Token(Kind.SEMI, pos, 1, line, posInLine));
 							pos++;
 							posInLine++;
@@ -336,14 +404,20 @@ public class Scanner {
 						case '"' -> {
 							for(int i =pos+1; i<chars.length; i++)
 							{
-								
-								if(chars[i] == '"' )
+								if(chars[i] == '\\' && chars[i+1] == '"')
+								{
+									curr += chars[i];
+									curr += chars[i+1];
+									i++;
+								}
+								else if(chars[i] == '"' )
 								{
 									fl = true;
 									break;
 								}
 								else
 								{
+									
 									curr += chars[i];
 								}
 							}
@@ -355,7 +429,7 @@ public class Scanner {
 							}
 							else 
 							{
-								System.out.println(curr);
+								
 								tokens.add(new Token(Kind.STRINGLIT, pos, curr.length()+2, line, posInLine));
 								pos += curr.length()+2;
 								posInLine += curr.length()+2;
@@ -376,7 +450,7 @@ public class Scanner {
 							posInLine++;
 						}
 						case 0 -> {
-							System.out.println("me");
+							
 							pos++;
 							tokens.add(new Token(Kind.EOF, pos, 0, line, posInLine));
 						}
@@ -520,6 +594,11 @@ public class Scanner {
 	 */
 	public int intVal(Token t) throws LexicalException {
 		/* IMPLEMENT THIS */
+		Kind currKind = t.kind;
+		int startPos = t.pos;
+		int currLength = t.length;
+		String text = "";
+		
 		return 0;
 	}
 	
