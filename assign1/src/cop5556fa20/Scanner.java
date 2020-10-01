@@ -573,9 +573,11 @@ public class Scanner {
 					}
 					else
 					{
-						tokens.add(new Token(Kind.INTLIT, startPos, pos-startPos +1, line, posInLine));
+						Token t = new Token(Kind.INTLIT, startPos, pos-startPos, line, posInLine);
+						tokens.add(new Token(Kind.INTLIT, startPos, pos-startPos, line, posInLine));
 						posInLine += pos-startPos +1;
 						state = State.START;
+						intVal(t);
 					}
 				}
 			}
@@ -594,12 +596,47 @@ public class Scanner {
 	 */
 	public int intVal(Token t) throws LexicalException {
 		/* IMPLEMENT THIS */
+		
 		Kind currKind = t.kind;
 		int startPos = t.pos;
 		int currLength = t.length;
 		String text = "";
+		int val = 0;
+		switch (currKind){
+		case CONST -> {
+			for(int i = startPos; i<startPos+currLength; i++)
+			{
+				text += chars[i];
+			}
+			val = constants.get(text);
+		}
+		case INTLIT -> {
+			try {
+				for(int i = startPos; i<startPos+currLength; i++)
+				{
+					
+					text += chars[i];
+				}
+				
+				val = Integer.valueOf(text);
+				System.out.println("In");
+				
+			
+			}
+			catch (Exception e)
+			{
+				throw new LexicalException("INTVAL not in range", startPos);
+			}
+			
+			
+		}
+		default -> {
+			System.out.println("Invalid token kind");
+		}
+		}
 		
-		return 0;
+		
+		return val;
 	}
 	
 	/**

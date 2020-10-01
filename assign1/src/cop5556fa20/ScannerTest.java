@@ -110,6 +110,7 @@ class ScannerTest {
 		checkNext(scanner, SEMI, 3, 1, 2, 1);
 		checkNext(scanner, SEMI, 4, 1, 2, 2);
 		checkNextIsEOF(scanner);
+		
 	}
 	
 	/**
