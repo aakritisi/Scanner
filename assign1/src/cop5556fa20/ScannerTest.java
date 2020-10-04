@@ -100,7 +100,7 @@ class ScannerTest {
 		
 		String input = """
 				;;
-				;;
+				;;   
 				""";
 		show(input);
 		Scanner scanner = new Scanner(input).scan();
