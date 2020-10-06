@@ -66,6 +66,7 @@ public class Scanner {
 	 */
 	public String getText(Token token) {
 		/* IMPLEMENT THIS */
+
 		Kind currKind = token.kind;
 		int startPos = token.pos;
 		int currLength = token.length;

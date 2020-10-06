@@ -127,6 +127,7 @@ class ScannerTest {
 		show(input);
 		show(scanner);
 		Token t0 = checkNext(scanner, IDENT, 0, 2, 1, 1);
+		System.out.println(t0.kind() == SEMI);
 		assertEquals("ij", scanner.getText(t0));
 		checkNextIsEOF(scanner);
 	}
