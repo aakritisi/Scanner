@@ -1,5 +1,6 @@
 
 /**
+ /**
  * Test class for  for the class project in COP5556 Programming Language Principles 
  * at the University of Florida, Fall 2020.
  * 
@@ -185,7 +186,6 @@ class SimpleParserTest {
 		pass(input);
 	}
 	
-
 	
 	@Test
 	public void testBinary0() throws LexicalException, SyntaxException {
@@ -218,6 +218,5 @@ class SimpleParserTest {
 		passExpression(input);
 	}
 	
-
 		
 }

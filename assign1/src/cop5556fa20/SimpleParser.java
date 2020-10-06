@@ -71,19 +71,27 @@ public class SimpleParser {
 			if(t.kind() == KW_image || t.kind() == KW_int || t.kind() == KW_string)
 			{
 				declaration();
+				if(t.kind() == SEMI)
+				{
+					consume();
+				}
+				else
+					throw new SyntaxException(t , "Syntax error");
 				
 			}		
 			else if(t.kind() == IDENT)
 			{
 				statement();
-			}
-			
-			if(t.kind() == SEMI)
-			{
-				consume();
+				if(t.kind() == SEMI)
+				{
+					consume();
+				}
+				else
+					throw new SyntaxException(t , "Syntax error");
 			}
 			else
 				throw new SyntaxException(t , "Syntax error");
+			
 		}
 		
 	}
@@ -335,7 +343,7 @@ public class SimpleParser {
 	
 	public void multExpression() throws SyntaxException, LexicalException {
 		unaryExpression();
-		while(t.kind() == STAR || t.kind() == DIV || t.kind() == MOD)
+		while( t.kind() == STAR || t.kind() == DIV|| t.kind() == MOD)
 		{
 			consume();
 			unaryExpression();
@@ -387,7 +395,8 @@ public class SimpleParser {
 				pixelConstructor();
 			else if(t.kind() == AT)
 				argExpression();
-			consume();
+			else
+				consume();
 			if(t.kind() == LSQUARE)
 				pixelSelector();
 				
