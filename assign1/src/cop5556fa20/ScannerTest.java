@@ -158,5 +158,4 @@ class ScannerTest {
 		show(exception);
 	}
 	
-
 }

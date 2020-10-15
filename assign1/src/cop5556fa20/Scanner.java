@@ -202,7 +202,10 @@ public class Scanner {
 			ch = chars[pos];
 			
 			switch(state) {
+			
 				case START -> {
+					
+					
 					startPos = pos;
 					switch(ch) {
 						case '(' -> {
@@ -236,6 +239,7 @@ public class Scanner {
 						}
 						
 						case ',' -> {
+							
 							tokens.add(new Token(Kind.COMMA, pos, 1, line, posInLine));
 							pos++;
 							posInLine++;
@@ -485,6 +489,7 @@ public class Scanner {
 						}
 						
 						case '_','$' -> {
+							
 							curr += ch;
 							state = State.IDENT;
 							pos++;
@@ -504,6 +509,7 @@ public class Scanner {
 							if(Character.isAlphabetic(ch))
 							{
 								
+								
 								curr += ch;
 								state = State.IDENT;
 								pos++;
@@ -522,13 +528,13 @@ public class Scanner {
 						}
 						
 					
-					}
+					} 
 					
 				}
 			
 				case IDENT -> {
 					
-					
+							
 							
 							if(Character.isAlphabetic(ch)||Character.isDigit(ch)||ch =='_'||ch =='$')
 							{
@@ -545,74 +551,104 @@ public class Scanner {
 								case "width" -> {
 									tokens.add(new Token(Kind.KW_WIDTH, startPos, curr.length(), line, posInLine));
 									state = State.START;
+									posInLine += curr.length();
 									curr = "";
+									
 									
 								}
 								case "height" -> {
 									tokens.add(new Token(Kind.KW_HEIGHT, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
+									
 								}
 								case "screen" -> {
 									tokens.add(new Token(Kind.KW_SCREEN, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "screen_width" -> {
 									tokens.add(new Token(Kind.KW_SCREEN_WIDTH, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "screen_height" -> {
 									tokens.add(new Token(Kind.KW_SCREEN_HEIGHT, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "image" -> {
 									tokens.add(new Token(Kind.KW_image, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "int" -> {
 									tokens.add(new Token(Kind.KW_int, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "string" -> {
 									tokens.add(new Token(Kind.KW_string, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "red" -> {
 									tokens.add(new Token(Kind.KW_RED, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "green" -> {
 									tokens.add(new Token(Kind.KW_GREEN, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "blue" -> {
 									tokens.add(new Token(Kind.KW_BLUE, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								case "Y" -> {
 									
 									tokens.add(new Token(Kind.KW_Y, pos, 1, line, posInLine));
-									pos++;
-									posInLine++;
+									posInLine += curr.length();
+									state = State.START;
+									curr = "";
+									
 								}
 								case "X" -> {
+									
 									tokens.add(new Token(Kind.KW_X, pos, 1, line, posInLine));
-									pos++;
-									posInLine++;
+									posInLine += curr.length();
+									state = State.START;
+									curr = "";
+									
 								}
 								case "Z", "WHITE", "SILVER", "GRAY", "BLACK", "RED", "MAROON", "YELLOW", "OLIVE", "LIME", "GREEN", "AQUA", "TEAL", "BLUE", "NAVY", "FUCHSIA", "PURPLE" ->{
 									tokens.add(new Token(Kind.CONST, startPos, curr.length(), line, posInLine));
+									posInLine += curr.length();
 									curr = "";
 									state = State.START;
+									
 								}
 								default -> {
 									
@@ -620,6 +656,8 @@ public class Scanner {
 									posInLine += curr.length();
 									curr = "";
 									state = State.START; 
+									
+									
 								}
 								
 							}

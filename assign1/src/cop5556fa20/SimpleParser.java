@@ -66,6 +66,7 @@ public class SimpleParser {
 
 
 	private void program() throws SyntaxException, LexicalException {
+		
 		while(scanner.hasTokens())
 		{
 			if(t.kind() == KW_image || t.kind() == KW_int || t.kind() == KW_string)
@@ -76,7 +77,10 @@ public class SimpleParser {
 					consume();
 				}
 				else
+				{
+					System.out.println(t);
 					throw new SyntaxException(t , "Syntax error");
+				}
 				
 			}		
 			else if(t.kind() == IDENT)
@@ -90,7 +94,10 @@ public class SimpleParser {
 					throw new SyntaxException(t , "Syntax error");
 			}
 			else
+			{
+				
 				throw new SyntaxException(t , "Syntax error");
+			}
 			
 		}
 		
@@ -155,6 +162,7 @@ public class SimpleParser {
 			consume();
 			if(t.kind() == LSQUARE)
 			{
+				
 				consume();
 				expression();
 				if(t.kind() == COMMA)
@@ -178,6 +186,7 @@ public class SimpleParser {
 			}
 			if(t.kind() == IDENT)
 			{
+				
 				consume();
 				if(t.kind() == LARROW || t.kind() == ASSIGN)
 				{
@@ -186,7 +195,10 @@ public class SimpleParser {
 				}
 			}
 			else
+			{
+				System.out.println("this1");
 				throw new SyntaxException(t , "Syntax error");
+			}
 			
 		}
 		else
