@@ -196,7 +196,7 @@ public class SimpleParser {
 			}
 			else
 			{
-				System.out.println("this1");
+				
 				throw new SyntaxException(t , "Syntax error");
 			}
 			
